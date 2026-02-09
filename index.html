@@ -180,7 +180,7 @@
 <div class="status-bar">
   <span id="game-status">Click to fetch live scores</span>
 </div>
-<button id="fetch-btn" onclick="fetchLiveScores()">Fetch Live Scores from ESPN</button>
+<div style="text-align:center;font-size:0.8rem;color:var(--text-dim)">Auto-refreshes every 30s &mdash; Next refresh in <span id="countdown">30</span>s &nbsp;<button id="fetch-btn" onclick="fetchLiveScores()" style="padding:3px 10px;border-radius:6px;border:1px solid #444;background:var(--card);color:var(--text);cursor:pointer;font-size:0.75rem;">Refresh Now</button></div>
 
 <div class="team-label">PATRIOTS &rarr;</div>
 <div class="grid-container">
@@ -434,6 +434,7 @@ let autoRefreshInterval = null;
 async function fetchLiveScores() {
   const statusEl = document.getElementById("game-status");
   statusEl.innerHTML = "Fetching...";
+  countdownSecs = 30;
 
   try {
     // Step 1: Find the Super Bowl game on the scoreboard
@@ -612,16 +613,25 @@ function buildMinuteScores(pbpData, currentNe, currentSea, statusType, currentPe
   return scores;
 }
 
+let countdownInterval = null;
+let countdownSecs = 30;
+
 function startAutoRefresh() {
   if (autoRefreshInterval) return;
-  autoRefreshInterval = setInterval(fetchLiveScores, 30000); // every 30s
+  countdownSecs = 30;
+  autoRefreshInterval = setInterval(() => { fetchLiveScores(); countdownSecs = 30; }, 30000);
+  if (!countdownInterval) {
+    countdownInterval = setInterval(() => {
+      countdownSecs = Math.max(0, countdownSecs - 1);
+      const el = document.getElementById("countdown");
+      if (el) el.textContent = countdownSecs;
+    }, 1000);
+  }
 }
 
 function stopAutoRefresh() {
-  if (autoRefreshInterval) {
-    clearInterval(autoRefreshInterval);
-    autoRefreshInterval = null;
-  }
+  if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
 }
 
 // ─── Clear ───
@@ -639,6 +649,10 @@ renderGrid();
 renderLegend();
 renderResults();
 renderLeaderboard();
+
+// Auto-fetch on load and refresh every 30s
+fetchLiveScores();
+startAutoRefresh();
 </script>
 </body>
 </html>
