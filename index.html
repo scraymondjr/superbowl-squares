@@ -19,45 +19,45 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding: 20px;
+    padding: 16px;
   }
-  h1 { text-align: center; font-size: 1.8rem; margin-bottom: 4px; }
-  .subtitle { text-align: center; color: var(--text-dim); margin-bottom: 6px; font-size: 0.95rem; }
+  h1 { text-align: center; font-size: 1.6rem; margin-bottom: 4px; }
+  .subtitle { text-align: center; color: var(--text-dim); margin-bottom: 6px; font-size: 0.9rem; }
+
   .score-banner {
-    display: flex; justify-content: center; align-items: center; gap: 30px;
-    background: var(--card); border-radius: 12px; padding: 14px 30px;
-    margin: 12px auto; max-width: 500px; border: 1px solid #333;
+    display: flex; justify-content: center; align-items: center; gap: 24px;
+    background: var(--card); border-radius: 12px; padding: 12px 24px;
+    margin: 10px auto; max-width: 420px; border: 1px solid #333;
   }
   .score-banner .team { text-align: center; }
-  .score-banner .team-name { font-size: 1rem; font-weight: 600; }
-  .score-banner .team-score { font-size: 2.2rem; font-weight: 700; }
-  .score-banner .vs { font-size: 1.2rem; color: var(--text-dim); }
-  .score-inputs { display: flex; justify-content: center; gap: 10px; margin: 10px auto; align-items: center; flex-wrap: wrap; }
-  .score-inputs label { font-size: 0.85rem; color: var(--text-dim); }
-  .score-inputs input[type=number] {
-    width: 60px; padding: 6px; border-radius: 6px; border: 1px solid #444;
-    background: var(--card); color: var(--text); text-align: center; font-size: 1rem;
+  .score-banner .team-name { font-size: 0.95rem; font-weight: 600; }
+  .score-banner .team-score { font-size: 2rem; font-weight: 700; }
+  .score-banner .vs { font-size: 1.1rem; color: var(--text-dim); }
+
+  .status-bar {
+    text-align: center; margin: 8px auto; font-size: 0.85rem; color: var(--text-dim);
   }
-  .score-inputs select {
-    padding: 6px 10px; border-radius: 6px; border: 1px solid #444;
-    background: var(--card); color: var(--text); font-size: 0.9rem;
-  }
-  .score-inputs button {
+  .status-bar .live { color: #4ade80; font-weight: 600; }
+  .status-bar .error { color: var(--highlight); }
+  #fetch-btn {
     padding: 6px 16px; border-radius: 6px; border: none;
     background: var(--highlight); color: #fff; font-weight: 600; cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.85rem; margin: 6px auto; display: block;
   }
-  .score-inputs button:hover { opacity: 0.85; }
+  #fetch-btn:hover { opacity: 0.85; }
+
+  .team-label {
+    text-align: center; font-weight: 700; font-size: 0.85rem;
+    letter-spacing: 2px; margin-bottom: 4px;
+  }
 
   .grid-container {
-    margin: 18px auto;
+    margin: 12px auto;
     overflow-x: auto;
     max-width: 100%;
     -webkit-overflow-scrolling: touch;
   }
-  .grid-container table {
-    margin: 0 auto;
-  }
+  .grid-container table { margin: 0 auto; }
   table.squares {
     border-collapse: separate;
     border-spacing: 0;
@@ -69,9 +69,7 @@
     background: var(--accent);
     padding: 4px 1px;
     width: 36px; min-width: 36px; max-width: 36px;
-    text-align: center;
-    font-weight: 700;
-    font-size: 0.85rem;
+    text-align: center; font-weight: 700; font-size: 0.85rem;
   }
   table.squares th.corner {
     background: var(--bg);
@@ -83,17 +81,12 @@
   }
   table.squares td {
     width: 36px; height: 36px; min-width: 36px; max-width: 36px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.78rem;
-    border: 1px solid #2a2a4a;
-    cursor: default;
-    transition: transform 0.1s;
-    position: relative;
+    text-align: center; font-weight: 600; font-size: 0.78rem;
+    border: 1px solid #2a2a4a; cursor: default;
+    transition: transform 0.1s; position: relative;
   }
   table.squares td.winner {
-    animation: pulse 1.5s infinite;
-    z-index: 1;
+    animation: pulse 1.5s infinite; z-index: 1;
     border: 2px solid gold !important;
     box-shadow: 0 0 10px rgba(255,215,0,0.5);
   }
@@ -101,53 +94,68 @@
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.08); }
   }
-  .team-label {
-    text-align: center;
-    font-weight: 700;
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-  }
-  .team-label.top { margin-bottom: 4px; }
-  .team-label.left {
-    writing-mode: vertical-lr;
-    transform: rotate(180deg);
-    position: absolute;
-    left: 0; top: 50%;
-  }
 
-  .results-section { max-width: 650px; margin: 24px auto; }
-  .results-section h2 { font-size: 1.2rem; margin-bottom: 10px; text-align: center; }
-  table.results {
-    width: 100%; border-collapse: collapse;
-    background: var(--card); border-radius: 8px; overflow: hidden;
+  /* Results */
+  .results-section {
+    max-width: 700px; margin: 20px auto;
   }
+  .results-section h2 {
+    font-size: 1.1rem; margin-bottom: 8px; text-align: center;
+  }
+  .results-scroll {
+    max-height: 400px; overflow-y: auto; border-radius: 8px;
+    border: 1px solid #2a2a4a;
+  }
+  table.results {
+    width: 100%; border-collapse: collapse; background: var(--card);
+  }
+  table.results thead { position: sticky; top: 0; z-index: 1; }
   table.results th {
-    background: var(--accent); padding: 8px 10px;
-    text-align: left; font-size: 0.85rem;
+    background: var(--accent); padding: 6px 6px;
+    text-align: center; font-size: 0.75rem; white-space: nowrap;
   }
   table.results td {
-    padding: 7px 10px; border-bottom: 1px solid #2a2a4a;
-    font-size: 0.85rem;
+    padding: 4px 6px; border-bottom: 1px solid #1a1a3a;
+    font-size: 0.78rem; text-align: center;
   }
   table.results tr:last-child td { border-bottom: none; }
-  table.results tr.current { background: rgba(233,69,96,0.15); }
+  table.results tr.bonus { background: rgba(233,69,96,0.12); }
+  table.results tr.active { background: rgba(74,222,128,0.12); }
   .winner-name { font-weight: 700; color: gold; }
-  .no-winner { color: var(--text-dim); font-style: italic; }
+  .no-winner { color: #555; }
+  .payout { color: #4ade80; font-weight: 600; }
+  .payout-bonus { color: #facc15; font-weight: 700; }
 
-  .legend { max-width: 650px; margin: 18px auto; }
-  .legend h3 { font-size: 1rem; margin-bottom: 8px; text-align: center; }
-  .legend-grid {
-    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+  /* Leaderboard */
+  .leaderboard { max-width: 500px; margin: 20px auto; }
+  .leaderboard h2 { font-size: 1.1rem; margin-bottom: 8px; text-align: center; }
+  table.lb {
+    width: 100%; border-collapse: collapse; background: var(--card);
+    border-radius: 8px; overflow: hidden;
   }
+  table.lb th {
+    background: var(--accent); padding: 6px 10px;
+    text-align: left; font-size: 0.8rem;
+  }
+  table.lb td {
+    padding: 5px 10px; border-bottom: 1px solid #1a1a3a; font-size: 0.82rem;
+  }
+  table.lb tr:last-child td { border-bottom: none; }
+  .earnings { color: #4ade80; font-weight: 700; }
+
+  /* Legend */
+  .legend { max-width: 650px; margin: 16px auto; }
+  .legend h3 { font-size: 0.95rem; margin-bottom: 8px; text-align: center; }
+  .legend-grid { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
   .legend-item {
-    padding: 3px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 600;
   }
 
   .actions { text-align: center; margin: 12px; }
   .actions button {
-    padding: 6px 16px; border-radius: 6px; border: 1px solid #444;
+    padding: 5px 14px; border-radius: 6px; border: 1px solid #444;
     background: var(--card); color: var(--text); cursor: pointer; margin: 0 4px;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
   }
   .actions button:hover { border-color: var(--highlight); }
 </style>
@@ -169,30 +177,42 @@
   </div>
 </div>
 
-<div class="score-inputs">
-  <label>SEA <input type="number" id="sea-score" min="0" max="99" value="0"></label>
-  <label>NE <input type="number" id="ne-score" min="0" max="99" value="0"></label>
-  <select id="quarter-select">
-    <option value="Q1">Q1</option>
-    <option value="Q2">Q2</option>
-    <option value="Q3">Q3</option>
-    <option value="Q4">Q4</option>
-    <option value="Final">Final</option>
-  </select>
-  <button onclick="recordResult()">Record Winner</button>
-  <button onclick="updateHighlight()">Update Board</button>
+<div class="status-bar">
+  <span id="game-status">Click to fetch live scores</span>
 </div>
+<button id="fetch-btn" onclick="fetchLiveScores()">Fetch Live Scores from ESPN</button>
 
-<div class="team-label top">PATRIOTS &rarr;</div>
+<div class="team-label">PATRIOTS &rarr;</div>
 <div class="grid-container">
   <table class="squares" id="grid"></table>
 </div>
 
 <div class="results-section">
-  <h2>Results</h2>
-  <table class="results" id="results-table">
-    <thead><tr><th>Period</th><th>NE Score</th><th>SEA Score</th><th>NE Digit</th><th>SEA Digit</th><th>Winner</th></tr></thead>
-    <tbody id="results-body"></tbody>
+  <h2>Minute-by-Minute Results (62 chances &bull; $5/min, $75 halftime &amp; final)</h2>
+  <div class="results-scroll">
+    <table class="results" id="results-table">
+      <thead>
+        <tr>
+          <th>Min</th>
+          <th>Period</th>
+          <th>Clock</th>
+          <th>NE</th>
+          <th>SEA</th>
+          <th>Square</th>
+          <th>Winner</th>
+          <th>Payout</th>
+        </tr>
+      </thead>
+      <tbody id="results-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="leaderboard">
+  <h2>Earnings Leaderboard</h2>
+  <table class="lb">
+    <thead><tr><th>#</th><th>Player</th><th>Minutes Won</th><th>Earnings</th></tr></thead>
+    <tbody id="lb-body"></tbody>
   </table>
 </div>
 
@@ -206,24 +226,23 @@
 </div>
 
 <script>
-// Grid data extracted from the image
+// ─── Grid Data ───
 const patriotsNums = [4, 8, 0, 2, 9, 6, 1, 7, 5, 3];
 const seahawksNums = [9, 2, 8, 0, 4, 7, 5, 6, 3, 1];
 
 const grid = [
-  ["KK","AS","SR","AK","LS","DM","SF","KL","AS","KL"],  // SEA 9
-  ["RM","RM","ED","CA","RM","KK","KN","KC","NC","SF"],  // SEA 2
-  ["MH","LK","LK","JA","SK","KK","JP","NC","MH","LR"],  // SEA 8
-  ["KO","KL","SR","LR","HA","JP","LS","AK","LK","JP"],  // SEA 0
-  ["LT","HW","KL","LT","JRK","NC","LT","HA","LK","JP"], // SEA 4
-  ["KL","SC","KA","NC","LK","JRK","KO","JA","KK","KN"], // SEA 7
-  ["CA","NC","JRK","DM","HW","NC","MH","CA","KC","DM"], // SEA 5
-  ["AG","JP","MH","NC","AS","SK","AG","NC","HW","HW"],  // SEA 6
-  ["SK","AS","KC","KA","NC","KC","NC","JRK","SC","SK"], // SEA 3
-  ["DM","RM","AS","LS","ED","AK","SR","LS","ED","AK"],  // SEA 1
+  ["KK","AS","SR","AK","LS","DM","SF","KL","AS","KL"],
+  ["RM","RM","ED","CA","RM","KK","KN","KC","NC","SF"],
+  ["MH","LK","LK","JA","SK","KK","JP","NC","MH","LR"],
+  ["KO","KL","SR","LR","HA","JP","LS","AK","LK","JP"],
+  ["LT","HW","KL","LT","JRK","NC","LT","HA","LK","JP"],
+  ["KL","SC","KA","NC","LK","JRK","KO","JA","KK","KN"],
+  ["CA","NC","JRK","DM","HW","NC","MH","CA","KC","DM"],
+  ["AG","JP","MH","NC","AS","SK","AG","NC","HW","HW"],
+  ["SK","AS","KC","KA","NC","KC","NC","JRK","SC","SK"],
+  ["DM","RM","AS","LS","ED","AK","SR","LS","ED","AK"],
 ];
 
-// Color map for players
 const playerColors = {};
 const palette = [
   "#e6b3b3","#b3d9ff","#b3e6cc","#ffffb3","#d9b3ff","#ffd9b3","#b3fff0",
@@ -234,15 +253,11 @@ const palette = [
 ];
 let colorIdx = 0;
 const counts = {};
-
 grid.forEach(row => row.forEach(name => {
   counts[name] = (counts[name] || 0) + 1;
-  if (!playerColors[name]) {
-    playerColors[name] = palette[colorIdx++ % palette.length];
-  }
+  if (!playerColors[name]) playerColors[name] = palette[colorIdx++ % palette.length];
 }));
 
-// Build lookup: digit -> {row, col}
 function getSquareOwner(neDigit, seaDigit) {
   const col = patriotsNums.indexOf(neDigit);
   const row = seahawksNums.indexOf(seaDigit);
@@ -250,105 +265,380 @@ function getSquareOwner(neDigit, seaDigit) {
   return grid[row][col];
 }
 
-// Render grid
+// ─── Build 62 period slots ───
+// Q1: minutes 1-15 (clock 15:00→0:00), Q2: 16-30, Halftime, Q3: 31-45, Q4: 46-60, Final
+function buildPeriods() {
+  const periods = [];
+  for (let q = 1; q <= 4; q++) {
+    for (let m = 1; m <= 15; m++) {
+      const gameMin = (q - 1) * 15 + m;
+      const clockMin = 15 - m;
+      const clockLabel = `${clockMin}:00`;
+      periods.push({
+        gameMin,
+        label: `Q${q}`,
+        clock: m === 15 ? "0:00" : `${clockMin}:00`,
+        payout: 5,
+        isBonus: false,
+        key: `min-${gameMin}`
+      });
+    }
+    if (q === 2) {
+      periods.push({
+        gameMin: "HT",
+        label: "Halftime",
+        clock: "-",
+        payout: 75,
+        isBonus: true,
+        key: "halftime"
+      });
+    }
+  }
+  periods.push({
+    gameMin: "F",
+    label: "Final",
+    clock: "-",
+    payout: 75,
+    isBonus: true,
+    key: "final"
+  });
+  return periods;
+}
+
+const allPeriods = buildPeriods();
+
+// ─── Results State ───
+// minuteScores: { "min-1": {ne: 0, sea: 0}, "halftime": {...}, "final": {...} }
+let minuteScores = JSON.parse(localStorage.getItem("sbMinuteScores") || "{}");
+
+function saveScores() {
+  localStorage.setItem("sbMinuteScores", JSON.stringify(minuteScores));
+}
+
+// ─── Render Grid ───
 function renderGrid() {
   const table = document.getElementById("grid");
   let html = "<tr><th class='corner'></th>";
   patriotsNums.forEach(n => html += `<th>${n}</th>`);
   html += "</tr>";
-
   seahawksNums.forEach((seaNum, r) => {
     html += `<tr><th class='row-hdr'>${seaNum}</th>`;
     patriotsNums.forEach((patNum, c) => {
       const name = grid[r][c];
-      const bg = playerColors[name];
-      const textColor = "#222";
-      html += `<td id="cell-${r}-${c}" style="background:${bg};color:${textColor}" title="${name} (NE ${patNum}, SEA ${seaNum})">${name}</td>`;
+      html += `<td id="cell-${r}-${c}" style="background:${playerColors[name]};color:#222" title="${name} (NE ${patNum}, SEA ${seaNum})">${name}</td>`;
     });
     html += "</tr>";
   });
   table.innerHTML = html;
 }
 
-// Render legend
-function renderLegend() {
-  const el = document.getElementById("legend");
-  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
-  el.innerHTML = sorted.map(([name, cnt]) =>
-    `<span class="legend-item" style="background:${playerColors[name]};color:#222">${name} (${cnt})</span>`
-  ).join("");
-}
-
-// Highlight current winning square
-function updateHighlight() {
-  const neScore = parseInt(document.getElementById("ne-score").value) || 0;
-  const seaScore = parseInt(document.getElementById("sea-score").value) || 0;
+// ─── Highlight current winning square ───
+function updateHighlight(neScore, seaScore) {
   document.getElementById("ne-score-display").textContent = neScore;
   document.getElementById("sea-score-display").textContent = seaScore;
-
   const neDigit = neScore % 10;
   const seaDigit = seaScore % 10;
   const col = patriotsNums.indexOf(neDigit);
   const row = seahawksNums.indexOf(seaDigit);
-
-  // Clear old highlights
   document.querySelectorAll("td.winner").forEach(td => td.classList.remove("winner"));
   if (row !== -1 && col !== -1) {
     document.getElementById(`cell-${row}-${col}`).classList.add("winner");
   }
 }
 
-// Results tracking
-let results = JSON.parse(localStorage.getItem("sbResults") || "[]");
-
-function recordResult() {
-  const neScore = parseInt(document.getElementById("ne-score").value) || 0;
-  const seaScore = parseInt(document.getElementById("sea-score").value) || 0;
-  const quarter = document.getElementById("quarter-select").value;
-  const neDigit = neScore % 10;
-  const seaDigit = seaScore % 10;
-  const winner = getSquareOwner(neDigit, seaDigit);
-
-  // Check if quarter already recorded
-  const existing = results.findIndex(r => r.quarter === quarter);
-  if (existing !== -1) {
-    results[existing] = { quarter, neScore, seaScore, neDigit, seaDigit, winner };
-  } else {
-    results.push({ quarter, neScore, seaScore, neDigit, seaDigit, winner });
-  }
-  localStorage.setItem("sbResults", JSON.stringify(results));
-  renderResults();
-  updateHighlight();
-}
-
+// ─── Render Results Table ───
 function renderResults() {
   const tbody = document.getElementById("results-body");
-  const periods = ["Q1","Q2","Q3","Q4","Final"];
-  tbody.innerHTML = periods.map(p => {
-    const r = results.find(x => x.quarter === p);
-    if (r) {
-      return `<tr><td>${p}</td><td>${r.neScore}</td><td>${r.seaScore}</td><td>${r.neDigit}</td><td>${r.seaDigit}</td><td class="winner-name">${r.winner}</td></tr>`;
-    }
-    return `<tr><td>${p}</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="no-winner">Pending</td></tr>`;
-  }).join("");
-}
+  let lastNe = null, lastSea = null;
+  let html = "";
 
-function clearResults() {
-  if (confirm("Clear all recorded results?")) {
-    results = [];
-    localStorage.setItem("sbResults", "[]");
-    renderResults();
+  for (const p of allPeriods) {
+    const data = minuteScores[p.key];
+    const isBonus = p.isBonus;
+    let rowClass = isBonus ? "bonus" : "";
+
+    if (data) {
+      const neDigit = data.ne % 10;
+      const seaDigit = data.sea % 10;
+      const owner = getSquareOwner(neDigit, seaDigit);
+      const square = `(${neDigit},${seaDigit})`;
+      const payoutClass = isBonus ? "payout-bonus" : "payout";
+      const payoutStr = `$${p.payout}`;
+      lastNe = data.ne;
+      lastSea = data.sea;
+      html += `<tr class="${rowClass}">
+        <td>${p.gameMin}</td><td>${p.label}</td><td>${p.clock}</td>
+        <td>${data.ne}</td><td>${data.sea}</td>
+        <td>${square}</td>
+        <td class="winner-name">${owner}</td>
+        <td class="${payoutClass}">${payoutStr}</td>
+      </tr>`;
+    } else {
+      html += `<tr class="${rowClass}">
+        <td>${p.gameMin}</td><td>${p.label}</td><td>${p.clock}</td>
+        <td class="no-winner">-</td><td class="no-winner">-</td>
+        <td class="no-winner">-</td>
+        <td class="no-winner">-</td>
+        <td class="no-winner">-</td>
+      </tr>`;
+    }
+  }
+  tbody.innerHTML = html;
+
+  // Update score banner with latest known score
+  if (lastNe !== null) {
+    updateHighlight(lastNe, lastSea);
   }
 }
 
-// Init
+// ─── Leaderboard ───
+function renderLeaderboard() {
+  const earnings = {};
+  for (const p of allPeriods) {
+    const data = minuteScores[p.key];
+    if (!data) continue;
+    const owner = getSquareOwner(data.ne % 10, data.sea % 10);
+    if (!earnings[owner]) earnings[owner] = { total: 0, mins: 0 };
+    earnings[owner].total += p.payout;
+    earnings[owner].mins += 1;
+  }
+  const sorted = Object.entries(earnings).sort((a, b) => b[1].total - a[1].total);
+  const tbody = document.getElementById("lb-body");
+  if (sorted.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-dim)">No results yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = sorted.map(([name, info], i) =>
+    `<tr>
+      <td>${i + 1}</td>
+      <td><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${playerColors[name]};margin-right:6px;vertical-align:middle;"></span>${name}</td>
+      <td>${info.mins}</td>
+      <td class="earnings">$${info.total}</td>
+    </tr>`
+  ).join("");
+}
+
+// ─── Legend ───
+function renderLegend() {
+  const el = document.getElementById("legend");
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  el.innerHTML = sorted.map(([name, cnt]) =>
+    `<span class="legend-item" style="background:${playerColors[name]};color:#222">${name} (${cnt})</span>`
+  ).join("");
+}
+
+// ─── ESPN Live Fetch ───
+// Fetches play-by-play from ESPN and builds minute-by-minute scores
+let autoRefreshInterval = null;
+
+async function fetchLiveScores() {
+  const statusEl = document.getElementById("game-status");
+  statusEl.innerHTML = "Fetching...";
+
+  try {
+    // Step 1: Find the Super Bowl game on the scoreboard
+    const sbRes = await fetch("https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard");
+    const sbData = await sbRes.json();
+
+    // Find the game (should be the only one on Super Bowl Sunday)
+    const event = sbData.events && sbData.events[0];
+    if (!event) {
+      statusEl.innerHTML = '<span class="error">No game found on ESPN scoreboard</span>';
+      return;
+    }
+
+    const eventId = event.id;
+    const competition = event.competitions[0];
+    const statusType = competition.status.type.name; // STATUS_SCHEDULED, STATUS_IN_PROGRESS, STATUS_FINAL, STATUS_HALFTIME, STATUS_END_PERIOD
+    const statusDetail = competition.status.type.shortDetail || competition.status.type.detail;
+    const gameClock = competition.status.displayClock;
+    const period = competition.status.period;
+
+    // Get current scores from scoreboard
+    let currentNe = 0, currentSea = 0;
+    for (const comp of competition.competitors) {
+      if (comp.team.abbreviation === "NE" || comp.team.abbreviation === "NEP") {
+        currentNe = parseInt(comp.score) || 0;
+      } else {
+        currentSea = parseInt(comp.score) || 0;
+      }
+    }
+
+    // Step 2: Fetch play-by-play for minute-by-minute breakdown
+    const pbpRes = await fetch(`https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event=${eventId}`);
+    const pbpData = await pbpRes.json();
+
+    // Parse scoring plays and build minute-by-minute score map
+    const newMinuteScores = buildMinuteScores(pbpData, currentNe, currentSea, statusType, period, gameClock);
+
+    // Merge into state
+    minuteScores = newMinuteScores;
+    saveScores();
+    renderResults();
+    renderLeaderboard();
+
+    // Update status display
+    if (statusType === "STATUS_FINAL") {
+      statusEl.innerHTML = `<span class="live">FINAL</span> &mdash; Last updated: ${new Date().toLocaleTimeString()}`;
+      stopAutoRefresh();
+    } else if (statusType === "STATUS_IN_PROGRESS" || statusType === "STATUS_HALFTIME" || statusType === "STATUS_END_PERIOD") {
+      statusEl.innerHTML = `<span class="live">LIVE</span> Q${period} ${gameClock} &mdash; NE ${currentNe}, SEA ${currentSea} &mdash; Updated: ${new Date().toLocaleTimeString()}`;
+      startAutoRefresh();
+    } else {
+      statusEl.innerHTML = `Game status: ${statusDetail || statusType} &mdash; Updated: ${new Date().toLocaleTimeString()}`;
+    }
+  } catch (err) {
+    statusEl.innerHTML = `<span class="error">Error: ${err.message}. Try again.</span>`;
+    console.error("Fetch error:", err);
+  }
+}
+
+function buildMinuteScores(pbpData, currentNe, currentSea, statusType, currentPeriod, gameClock) {
+  const scores = {};
+
+  // Extract all plays with score information
+  // pbpData.drives.previous[] has drives, each with plays
+  // Each play has: period.number, clock.displayValue, homeScore, awayScore
+  // We need to figure out which team is home vs away
+  let neIsHome = false;
+  if (pbpData.header && pbpData.header.competitions && pbpData.header.competitions[0]) {
+    const comps = pbpData.header.competitions[0].competitors;
+    for (const c of comps) {
+      if ((c.team.abbreviation === "NE" || c.team.abbreviation === "NEP") && c.homeAway === "home") {
+        neIsHome = true;
+      }
+    }
+  }
+
+  // Build a timeline of score states from drives/plays
+  const scoreTimeline = []; // [{quarter, clockSecs, ne, sea}]
+
+  // Start with 0-0
+  scoreTimeline.push({ quarter: 1, clockSecs: 900, ne: 0, sea: 0 });
+
+  if (pbpData.drives && (pbpData.drives.previous || pbpData.drives.current)) {
+    const allDrives = [...(pbpData.drives.previous || [])];
+    if (pbpData.drives.current) allDrives.push(pbpData.drives.current);
+
+    for (const drive of allDrives) {
+      if (!drive.plays) continue;
+      for (const play of drive.plays) {
+        if (!play.period) continue;
+        const q = play.period.number;
+        const clockParts = (play.clock && play.clock.displayValue) ? play.clock.displayValue.split(":") : null;
+        const clockSecs = clockParts ? parseInt(clockParts[0]) * 60 + parseInt(clockParts[1]) : 0;
+
+        let ne, sea;
+        if (neIsHome) {
+          ne = play.homeScore !== undefined ? play.homeScore : null;
+          sea = play.awayScore !== undefined ? play.awayScore : null;
+        } else {
+          ne = play.awayScore !== undefined ? play.awayScore : null;
+          sea = play.homeScore !== undefined ? play.homeScore : null;
+        }
+        if (ne !== null && sea !== null) {
+          scoreTimeline.push({ quarter: q, clockSecs, ne, sea });
+        }
+      }
+    }
+  }
+
+  // Sort timeline by quarter then by clock descending (clock counts down)
+  scoreTimeline.sort((a, b) => {
+    if (a.quarter !== b.quarter) return a.quarter - b.quarter;
+    return b.clockSecs - a.clockSecs; // higher clock = earlier in quarter
+  });
+
+  // Now map each game minute to its score
+  // Game minute 1 = Q1 clock 15:00→14:01 (seconds 900→841)
+  // Game minute 15 = Q1 clock 1:00→0:00 (seconds 60→0)
+  // etc.
+
+  function getScoreAtPoint(quarter, clockSecs) {
+    // Find the latest timeline entry at or before this point
+    let best = { ne: 0, sea: 0 };
+    for (const entry of scoreTimeline) {
+      if (entry.quarter < quarter || (entry.quarter === quarter && entry.clockSecs >= clockSecs)) {
+        best = { ne: entry.ne, sea: entry.sea };
+      }
+      if (entry.quarter > quarter || (entry.quarter === quarter && entry.clockSecs < clockSecs)) {
+        break;
+      }
+    }
+    return best;
+  }
+
+  // Determine how far the game has progressed
+  // Convert current game state to a game minute number
+  let currentGameMin = 0;
+  const clockParts = gameClock ? gameClock.split(":") : null;
+  const currentClockSecs = clockParts ? parseInt(clockParts[0]) * 60 + parseInt(clockParts[1]) : 0;
+
+  if (statusType === "STATUS_FINAL") {
+    currentGameMin = 999; // all minutes
+  } else if (statusType === "STATUS_HALFTIME") {
+    currentGameMin = 30.5; // through Q2 + halftime
+  } else if (statusType === "STATUS_END_PERIOD") {
+    currentGameMin = currentPeriod * 15;
+  } else if (statusType === "STATUS_IN_PROGRESS") {
+    // Current minute within the quarter
+    const minuteInQ = Math.ceil((900 - currentClockSecs) / 60) || 1;
+    currentGameMin = (currentPeriod - 1) * 15 + minuteInQ - 0.5; // -0.5 means current minute is in progress
+  }
+
+  // Fill in each minute that has been completed
+  for (let q = 1; q <= 4; q++) {
+    for (let m = 1; m <= 15; m++) {
+      const gameMin = (q - 1) * 15 + m;
+      if (gameMin > currentGameMin) break;
+
+      // Score at the END of this minute = score when clock reaches (15-m):00
+      const endClockSecs = (15 - m) * 60;
+      const score = getScoreAtPoint(q, endClockSecs);
+      scores[`min-${gameMin}`] = { ne: score.ne, sea: score.sea };
+    }
+    // Halftime: score at end of Q2
+    if (q === 2 && currentGameMin >= 30.5) {
+      const htScore = getScoreAtPoint(2, 0);
+      scores["halftime"] = { ne: htScore.ne, sea: htScore.sea };
+    }
+  }
+
+  // Final
+  if (statusType === "STATUS_FINAL") {
+    scores["final"] = { ne: currentNe, sea: currentSea };
+  }
+
+  return scores;
+}
+
+function startAutoRefresh() {
+  if (autoRefreshInterval) return;
+  autoRefreshInterval = setInterval(fetchLiveScores, 30000); // every 30s
+}
+
+function stopAutoRefresh() {
+  if (autoRefreshInterval) {
+    clearInterval(autoRefreshInterval);
+    autoRefreshInterval = null;
+  }
+}
+
+// ─── Clear ───
+function clearResults() {
+  if (confirm("Clear all results and re-fetch?")) {
+    minuteScores = {};
+    saveScores();
+    renderResults();
+    renderLeaderboard();
+  }
+}
+
+// ─── Init ───
 renderGrid();
 renderLegend();
 renderResults();
-
-// Auto-update on score change
-document.getElementById("ne-score").addEventListener("input", updateHighlight);
-document.getElementById("sea-score").addEventListener("input", updateHighlight);
+renderLeaderboard();
 </script>
 </body>
 </html>
