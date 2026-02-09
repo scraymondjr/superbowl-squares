@@ -182,6 +182,14 @@
 </div>
 <div style="text-align:center;font-size:0.8rem;color:var(--text-dim)">Auto-refreshes every 30s &mdash; Next refresh in <span id="countdown">30</span>s &nbsp;<button id="fetch-btn" onclick="fetchLiveScores()" style="padding:3px 10px;border-radius:6px;border:1px solid #444;background:var(--card);color:var(--text);cursor:pointer;font-size:0.75rem;">Refresh Now</button></div>
 
+<div class="leaderboard">
+  <h2>Earnings Leaderboard</h2>
+  <table class="lb">
+    <thead><tr><th>#</th><th>Player</th><th>Minutes Won</th><th>Earnings</th></tr></thead>
+    <tbody id="lb-body"></tbody>
+  </table>
+</div>
+
 <div style="text-align:center;margin:10px auto;max-width:400px;">
   <input type="text" id="player-filter" placeholder="Search player initials (e.g. KL)" style="width:100%;padding:7px 12px;border-radius:6px;border:1px solid #444;background:var(--card);color:var(--text);font-size:0.9rem;text-align:center;">
   <div id="filter-results" style="margin-top:6px;font-size:0.8rem;color:var(--text-dim);"></div>
@@ -211,14 +219,6 @@
       <tbody id="results-body"></tbody>
     </table>
   </div>
-</div>
-
-<div class="leaderboard">
-  <h2>Earnings Leaderboard</h2>
-  <table class="lb">
-    <thead><tr><th>#</th><th>Player</th><th>Minutes Won</th><th>Earnings</th></tr></thead>
-    <tbody id="lb-body"></tbody>
-  </table>
 </div>
 
 <div class="legend">
