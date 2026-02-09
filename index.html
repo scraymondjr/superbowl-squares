@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super Bowl Squares Tracker</title>
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --card: #16213e;
+    --accent: #0f3460;
+    --highlight: #e94560;
+    --text: #eee;
+    --text-dim: #aaa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  h1 { text-align: center; font-size: 1.8rem; margin-bottom: 4px; }
+  .subtitle { text-align: center; color: var(--text-dim); margin-bottom: 6px; font-size: 0.95rem; }
+  .score-banner {
+    display: flex; justify-content: center; align-items: center; gap: 30px;
+    background: var(--card); border-radius: 12px; padding: 14px 30px;
+    margin: 12px auto; max-width: 500px; border: 1px solid #333;
+  }
+  .score-banner .team { text-align: center; }
+  .score-banner .team-name { font-size: 1rem; font-weight: 600; }
+  .score-banner .team-score { font-size: 2.2rem; font-weight: 700; }
+  .score-banner .vs { font-size: 1.2rem; color: var(--text-dim); }
+  .score-inputs { display: flex; justify-content: center; gap: 10px; margin: 10px auto; align-items: center; flex-wrap: wrap; }
+  .score-inputs label { font-size: 0.85rem; color: var(--text-dim); }
+  .score-inputs input[type=number] {
+    width: 60px; padding: 6px; border-radius: 6px; border: 1px solid #444;
+    background: var(--card); color: var(--text); text-align: center; font-size: 1rem;
+  }
+  .score-inputs select {
+    padding: 6px 10px; border-radius: 6px; border: 1px solid #444;
+    background: var(--card); color: var(--text); font-size: 0.9rem;
+  }
+  .score-inputs button {
+    padding: 6px 16px; border-radius: 6px; border: none;
+    background: var(--highlight); color: #fff; font-weight: 600; cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .score-inputs button:hover { opacity: 0.85; }
+
+  .grid-container {
+    display: flex; justify-content: center; margin: 18px auto;
+    overflow-x: auto;
+  }
+  table.squares {
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+  table.squares th {
+    background: var(--accent);
+    padding: 6px 2px;
+    min-width: 46px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  table.squares th.corner { background: transparent; }
+  table.squares th.row-hdr {
+    background: #0a2351;
+    min-width: 36px;
+  }
+  table.squares td {
+    width: 46px; height: 42px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.78rem;
+    border: 1px solid #2a2a4a;
+    cursor: default;
+    transition: transform 0.1s;
+    position: relative;
+  }
+  table.squares td.winner {
+    animation: pulse 1.5s infinite;
+    z-index: 1;
+    border: 2px solid gold !important;
+    box-shadow: 0 0 10px rgba(255,215,0,0.5);
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .team-label {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+  }
+  .team-label.top { margin-bottom: 4px; }
+  .team-label.left {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    position: absolute;
+    left: 0; top: 50%;
+  }
+
+  .results-section { max-width: 650px; margin: 24px auto; }
+  .results-section h2 { font-size: 1.2rem; margin-bottom: 10px; text-align: center; }
+  table.results {
+    width: 100%; border-collapse: collapse;
+    background: var(--card); border-radius: 8px; overflow: hidden;
+  }
+  table.results th {
+    background: var(--accent); padding: 8px 10px;
+    text-align: left; font-size: 0.85rem;
+  }
+  table.results td {
+    padding: 7px 10px; border-bottom: 1px solid #2a2a4a;
+    font-size: 0.85rem;
+  }
+  table.results tr:last-child td { border-bottom: none; }
+  table.results tr.current { background: rgba(233,69,96,0.15); }
+  .winner-name { font-weight: 700; color: gold; }
+  .no-winner { color: var(--text-dim); font-style: italic; }
+
+  .legend { max-width: 650px; margin: 18px auto; }
+  .legend h3 { font-size: 1rem; margin-bottom: 8px; text-align: center; }
+  .legend-grid {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+  }
+  .legend-item {
+    padding: 3px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
+  }
+
+  .actions { text-align: center; margin: 12px; }
+  .actions button {
+    padding: 6px 16px; border-radius: 6px; border: 1px solid #444;
+    background: var(--card); color: var(--text); cursor: pointer; margin: 0 4px;
+    font-size: 0.8rem;
+  }
+  .actions button:hover { border-color: var(--highlight); }
+</style>
+</head>
+<body>
+
+<h1>Super Bowl Squares</h1>
+<p class="subtitle">Seahawks (vertical) vs Patriots (horizontal)</p>
+
+<div class="score-banner">
+  <div class="team">
+    <div class="team-name">SEA</div>
+    <div class="team-score" id="sea-score-display">0</div>
+  </div>
+  <div class="vs">vs</div>
+  <div class="team">
+    <div class="team-name">NE</div>
+    <div class="team-score" id="ne-score-display">0</div>
+  </div>
+</div>
+
+<div class="score-inputs">
+  <label>SEA <input type="number" id="sea-score" min="0" max="99" value="0"></label>
+  <label>NE <input type="number" id="ne-score" min="0" max="99" value="0"></label>
+  <select id="quarter-select">
+    <option value="Q1">Q1</option>
+    <option value="Q2">Q2</option>
+    <option value="Q3">Q3</option>
+    <option value="Q4">Q4</option>
+    <option value="Final">Final</option>
+  </select>
+  <button onclick="recordResult()">Record Winner</button>
+  <button onclick="updateHighlight()">Update Board</button>
+</div>
+
+<div class="team-label top">PATRIOTS &rarr;</div>
+<div class="grid-container">
+  <table class="squares" id="grid"></table>
+</div>
+
+<div class="results-section">
+  <h2>Results</h2>
+  <table class="results" id="results-table">
+    <thead><tr><th>Period</th><th>NE Score</th><th>SEA Score</th><th>NE Digit</th><th>SEA Digit</th><th>Winner</th></tr></thead>
+    <tbody id="results-body"></tbody>
+  </table>
+</div>
+
+<div class="legend">
+  <h3>Players &amp; Square Counts</h3>
+  <div class="legend-grid" id="legend"></div>
+</div>
+
+<div class="actions">
+  <button onclick="clearResults()">Clear All Results</button>
+</div>
+
+<script>
+// Grid data extracted from the image
+const patriotsNums = [4, 8, 0, 2, 9, 6, 1, 7, 5, 3];
+const seahawksNums = [9, 2, 8, 0, 4, 7, 5, 6, 3, 1];
+
+const grid = [
+  ["KK","AS","SR","AK","LS","DM","SF","KL","AS","KL"],  // SEA 9
+  ["RM","RM","ED","CA","RM","KK","KN","KC","NC","SF"],  // SEA 2
+  ["MH","LK","LK","JA","SK","KK","JP","NC","MH","LR"],  // SEA 8
+  ["KO","KL","SR","LR","HA","JP","LS","AK","LK","JP"],  // SEA 0
+  ["LT","HW","KL","LT","JRK","NC","LT","HA","LK","JP"], // SEA 4
+  ["KL","SC","KA","NC","LK","JRK","KO","JA","KK","KN"], // SEA 7
+  ["CA","NC","JRK","DM","HW","NC","MH","CA","KC","DM"], // SEA 5
+  ["AG","JP","MH","NC","AS","SK","AG","NC","HW","HW"],  // SEA 6
+  ["SK","AS","KC","KA","NC","KC","NC","JRK","SC","SK"], // SEA 3
+  ["DM","RM","AS","LS","ED","AK","SR","LS","ED","AK"],  // SEA 1
+];
+
+// Color map for players
+const playerColors = {};
+const palette = [
+  "#e6b3b3","#b3d9ff","#b3e6cc","#ffffb3","#d9b3ff","#ffd9b3","#b3fff0",
+  "#ffb3d9","#d4e6b3","#b3ccff","#f0b3ff","#b3ffe0","#ffe6b3","#c9b3ff",
+  "#b3f2ff","#ffcce6","#d6ffb3","#b3c2ff","#fff0b3","#e0b3ff","#b3ffcc",
+  "#ffb3b3","#b3e6ff","#ccffb3","#ffccb3","#c2b3ff","#b3ffd9","#f5ffb3",
+  "#deb3ff","#b3fff5"
+];
+let colorIdx = 0;
+const counts = {};
+
+grid.forEach(row => row.forEach(name => {
+  counts[name] = (counts[name] || 0) + 1;
+  if (!playerColors[name]) {
+    playerColors[name] = palette[colorIdx++ % palette.length];
+  }
+}));
+
+// Build lookup: digit -> {row, col}
+function getSquareOwner(neDigit, seaDigit) {
+  const col = patriotsNums.indexOf(neDigit);
+  const row = seahawksNums.indexOf(seaDigit);
+  if (col === -1 || row === -1) return "??";
+  return grid[row][col];
+}
+
+// Render grid
+function renderGrid() {
+  const table = document.getElementById("grid");
+  let html = "<tr><th class='corner'></th>";
+  patriotsNums.forEach(n => html += `<th>${n}</th>`);
+  html += "</tr>";
+
+  seahawksNums.forEach((seaNum, r) => {
+    html += `<tr><th class='row-hdr'>${seaNum}</th>`;
+    patriotsNums.forEach((patNum, c) => {
+      const name = grid[r][c];
+      const bg = playerColors[name];
+      const textColor = "#222";
+      html += `<td id="cell-${r}-${c}" style="background:${bg};color:${textColor}" title="${name} (NE ${patNum}, SEA ${seaNum})">${name}</td>`;
+    });
+    html += "</tr>";
+  });
+  table.innerHTML = html;
+}
+
+// Render legend
+function renderLegend() {
+  const el = document.getElementById("legend");
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  el.innerHTML = sorted.map(([name, cnt]) =>
+    `<span class="legend-item" style="background:${playerColors[name]};color:#222">${name} (${cnt})</span>`
+  ).join("");
+}
+
+// Highlight current winning square
+function updateHighlight() {
+  const neScore = parseInt(document.getElementById("ne-score").value) || 0;
+  const seaScore = parseInt(document.getElementById("sea-score").value) || 0;
+  document.getElementById("ne-score-display").textContent = neScore;
+  document.getElementById("sea-score-display").textContent = seaScore;
+
+  const neDigit = neScore % 10;
+  const seaDigit = seaScore % 10;
+  const col = patriotsNums.indexOf(neDigit);
+  const row = seahawksNums.indexOf(seaDigit);
+
+  // Clear old highlights
+  document.querySelectorAll("td.winner").forEach(td => td.classList.remove("winner"));
+  if (row !== -1 && col !== -1) {
+    document.getElementById(`cell-${row}-${col}`).classList.add("winner");
+  }
+}
+
+// Results tracking
+let results = JSON.parse(localStorage.getItem("sbResults") || "[]");
+
+function recordResult() {
+  const neScore = parseInt(document.getElementById("ne-score").value) || 0;
+  const seaScore = parseInt(document.getElementById("sea-score").value) || 0;
+  const quarter = document.getElementById("quarter-select").value;
+  const neDigit = neScore % 10;
+  const seaDigit = seaScore % 10;
+  const winner = getSquareOwner(neDigit, seaDigit);
+
+  // Check if quarter already recorded
+  const existing = results.findIndex(r => r.quarter === quarter);
+  if (existing !== -1) {
+    results[existing] = { quarter, neScore, seaScore, neDigit, seaDigit, winner };
+  } else {
+    results.push({ quarter, neScore, seaScore, neDigit, seaDigit, winner });
+  }
+  localStorage.setItem("sbResults", JSON.stringify(results));
+  renderResults();
+  updateHighlight();
+}
+
+function renderResults() {
+  const tbody = document.getElementById("results-body");
+  const periods = ["Q1","Q2","Q3","Q4","Final"];
+  tbody.innerHTML = periods.map(p => {
+    const r = results.find(x => x.quarter === p);
+    if (r) {
+      return `<tr><td>${p}</td><td>${r.neScore}</td><td>${r.seaScore}</td><td>${r.neDigit}</td><td>${r.seaDigit}</td><td class="winner-name">${r.winner}</td></tr>`;
+    }
+    return `<tr><td>${p}</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="no-winner">Pending</td></tr>`;
+  }).join("");
+}
+
+function clearResults() {
+  if (confirm("Clear all recorded results?")) {
+    results = [];
+    localStorage.setItem("sbResults", "[]");
+    renderResults();
+  }
+}
+
+// Init
+renderGrid();
+renderLegend();
+renderResults();
+
+// Auto-update on score change
+document.getElementById("ne-score").addEventListener("input", updateHighlight);
+document.getElementById("sea-score").addEventListener("input", updateHighlight);
+</script>
+</body>
+</html>
