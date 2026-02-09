@@ -182,6 +182,12 @@
 </div>
 <div style="text-align:center;font-size:0.8rem;color:var(--text-dim)">Auto-refreshes every 30s &mdash; Next refresh in <span id="countdown">30</span>s &nbsp;<button id="fetch-btn" onclick="fetchLiveScores()" style="padding:3px 10px;border-radius:6px;border:1px solid #444;background:var(--card);color:var(--text);cursor:pointer;font-size:0.75rem;">Refresh Now</button></div>
 
+<div id="current-winner-banner" style="max-width:420px;margin:14px auto;padding:14px 20px;border-radius:12px;background:linear-gradient(135deg,#1a3a1a,#16213e);border:2px solid gold;text-align:center;display:none;">
+  <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:2px;color:gold;margin-bottom:4px;">Current Winner</div>
+  <div id="current-winner-name" style="font-size:1.8rem;font-weight:800;color:#fff;"></div>
+  <div id="current-winner-detail" style="font-size:0.85rem;color:var(--text-dim);margin-top:2px;"></div>
+</div>
+
 <div class="leaderboard">
   <h2>Earnings Leaderboard</h2>
   <table class="lb">
@@ -348,6 +354,22 @@ function updateHighlight(neScore, seaScore) {
   document.querySelectorAll("td.winner").forEach(td => td.classList.remove("winner"));
   if (row !== -1 && col !== -1) {
     document.getElementById(`cell-${row}-${col}`).classList.add("winner");
+  }
+
+  // Update current winner banner
+  const banner = document.getElementById("current-winner-banner");
+  const nameEl = document.getElementById("current-winner-name");
+  const detailEl = document.getElementById("current-winner-detail");
+  if (neScore === 0 && seaScore === 0 && Object.keys(minuteScores).length === 0) {
+    banner.style.display = "none";
+  } else {
+    const owner = getSquareOwner(neDigit, seaDigit);
+    const color = playerColors[owner] || "#fff";
+    banner.style.display = "block";
+    banner.style.borderColor = color;
+    nameEl.textContent = owner;
+    nameEl.style.color = color;
+    detailEl.innerHTML = `Square (${neDigit}, ${seaDigit}) &mdash; NE ${neScore}, SEA ${seaScore}`;
   }
 }
 
