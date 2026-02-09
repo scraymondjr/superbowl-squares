@@ -62,26 +62,27 @@
     border-collapse: separate;
     border-spacing: 0;
     font-size: 0.8rem;
+    table-layout: fixed;
+    width: calc(28px + 36px * 10);
   }
   table.squares th {
     background: var(--accent);
-    padding: 6px 2px;
-    min-width: 46px;
+    padding: 4px 1px;
+    width: 36px; min-width: 36px; max-width: 36px;
     text-align: center;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
   table.squares th.corner {
     background: var(--bg);
-    position: sticky; left: 0; z-index: 3;
+    width: 28px; min-width: 28px; max-width: 28px;
   }
   table.squares th.row-hdr {
     background: #0a2351;
-    min-width: 36px;
-    position: sticky; left: 0; z-index: 2;
+    width: 28px; min-width: 28px; max-width: 28px;
   }
   table.squares td {
-    width: 46px; height: 42px;
+    width: 36px; height: 36px; min-width: 36px; max-width: 36px;
     text-align: center;
     font-weight: 600;
     font-size: 0.78rem;
