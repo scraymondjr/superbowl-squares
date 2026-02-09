@@ -51,10 +51,11 @@
 
   .grid-container {
     display: flex; justify-content: center; margin: 18px auto;
-    overflow-x: auto;
+    overflow-x: auto; max-width: 100%;
   }
   table.squares {
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 0.8rem;
   }
   table.squares th {
@@ -65,10 +66,14 @@
     font-weight: 700;
     font-size: 0.95rem;
   }
-  table.squares th.corner { background: transparent; }
+  table.squares th.corner {
+    background: var(--bg);
+    position: sticky; left: 0; z-index: 3;
+  }
   table.squares th.row-hdr {
     background: #0a2351;
     min-width: 36px;
+    position: sticky; left: 0; z-index: 2;
   }
   table.squares td {
     width: 46px; height: 42px;
