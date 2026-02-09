@@ -182,6 +182,11 @@
 </div>
 <div style="text-align:center;font-size:0.8rem;color:var(--text-dim)">Auto-refreshes every 30s &mdash; Next refresh in <span id="countdown">30</span>s &nbsp;<button id="fetch-btn" onclick="fetchLiveScores()" style="padding:3px 10px;border-radius:6px;border:1px solid #444;background:var(--card);color:var(--text);cursor:pointer;font-size:0.75rem;">Refresh Now</button></div>
 
+<div style="text-align:center;margin:10px auto;max-width:400px;">
+  <input type="text" id="player-filter" placeholder="Search player initials (e.g. KL)" style="width:100%;padding:7px 12px;border-radius:6px;border:1px solid #444;background:var(--card);color:var(--text);font-size:0.9rem;text-align:center;">
+  <div id="filter-results" style="margin-top:6px;font-size:0.8rem;color:var(--text-dim);"></div>
+</div>
+
 <div class="team-label">PATRIOTS &rarr;</div>
 <div class="grid-container">
   <table class="squares" id="grid"></table>
@@ -649,6 +654,53 @@ renderGrid();
 renderLegend();
 renderResults();
 renderLeaderboard();
+
+// ─── Player Search/Filter ───
+document.getElementById("player-filter").addEventListener("input", function() {
+  const query = this.value.trim().toUpperCase();
+  const resultsEl = document.getElementById("filter-results");
+
+  // Reset all cell dimming
+  document.querySelectorAll("table.squares td").forEach(td => {
+    td.style.opacity = "";
+    td.style.outline = "";
+  });
+
+  if (!query) {
+    resultsEl.innerHTML = "";
+    return;
+  }
+
+  // Find matching cells
+  const matches = [];
+  seahawksNums.forEach((seaNum, r) => {
+    patriotsNums.forEach((patNum, c) => {
+      const name = grid[r][c];
+      if (name.toUpperCase() === query) {
+        matches.push({ r, c, patNum, seaNum });
+      }
+    });
+  });
+
+  // Dim non-matching, highlight matching
+  document.querySelectorAll("table.squares td").forEach(td => {
+    td.style.opacity = "0.2";
+  });
+  matches.forEach(m => {
+    const cell = document.getElementById(`cell-${m.r}-${m.c}`);
+    if (cell) {
+      cell.style.opacity = "1";
+      cell.style.outline = "2px solid #fff";
+    }
+  });
+
+  if (matches.length > 0) {
+    const squareList = matches.map(m => `NE ${m.patNum} / SEA ${m.seaNum}`).join(" &bull; ");
+    resultsEl.innerHTML = `<strong style="color:var(--text)">${query}</strong>: ${matches.length} square${matches.length > 1 ? "s" : ""} &mdash; ${squareList}`;
+  } else {
+    resultsEl.innerHTML = `No squares found for "<strong>${query}</strong>"`;
+  }
+});
 
 // Auto-fetch on load and refresh every 30s
 fetchLiveScores();
